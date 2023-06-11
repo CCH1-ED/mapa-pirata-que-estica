@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//pensei em criar uma pilha de vetores para armazenar a matriz e os dados dela mas sei la
+//pensei em criar uma pilha/fila de vetores para armazenar a matriz e os dados dela mas sei la
 
 typedef struct Nodo{
 
