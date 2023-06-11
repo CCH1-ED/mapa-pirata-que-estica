@@ -1,19 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+//pensei em criar uma pilha de vetores para armazenar a matriz e os dados dela mas sei la
+
+typedef struct Nodo{
+
+}Nodo;
+
+char create_matrix(line, colunm ){
+
+}
 
 int main(){
-    int line, column;
-    char command[10];
-    scanf("%d %d \n", &line, &column);
-    for(int i = 0; i < line; i++){
-        for(int j = 0;j < column; i++){
-            
-        }
-    }
-    while(command != 'F'){
-        scanf("%s", &command);
+    int line, colunm;
 
-    }
+    char command[10];
+    scanf("%s", &command);
+    create_matrix;
+    do{
+        scanf("%s", &command);
+    }while (command != 'F');
+    
     return 0;
 }
