@@ -3,19 +3,23 @@
 #include <string.h>
 
 
-char create_matrix(int line,int colunm){
-    char matrix[line][colunm];
+char ** create_matrix(int line, int colunm){
+    char ** Line = (char **)malloc(sizeof(char *)*line);
+    for(int i; i < line;i++){
+        Line[i] = (char *)malloc(sizeof(char)* colunm);
+    }
     for(int i; i < line;i++){
         for(int j; j < colunm;j++){
-            scanf("%c", &matrix[i][j]);
+            scanf(" %c", &Line[i][j]);
         }
     }
+    return Line;
 }
 
 int main(){
     int line, colunm;
     scanf("%d %d", &line, &colunm);
-    create_matrix(line, colunm);
+    char ** matrix = create_matrix(line, colunm);
 
     char command[10];
     do{
