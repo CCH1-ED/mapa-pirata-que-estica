@@ -27,18 +27,22 @@ Nodo **adjacency_list(int all_vertice,int line, int colunm,char **matrix){
     for(int i; i < line;i++){
         for(int j; j < colunm;j++){
             vertice = matrix[i][j];
-            Nodo *visitable(line, colunm, matrix);
+            Nodo *visitable(Nodo *list, line, colunm, matrix);
         }
     }
 }
 
-Nodo *visitable(int line, int colunm,char **matrix){
+
+Nodo *visitable(Nodo *list,int line, int colunm,char **matrix){
+    Nodo *v = (Nodo*)malloc(sizeof(v));
     
 }
 
 int main(){
     int line, colunm;
     scanf("%d %d", &line, &colunm);
+    Nodo *list = NULL;
+    Nodo *v = create_visitable();
     char **matrix = create_matrix(line, colunm);
     Nodo **adjacency_list(line, colunm, matrix);
 
