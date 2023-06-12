@@ -5,6 +5,7 @@
 typedef struct Nodo{
     int vertice;
     struct Nodo *next;
+    struct Nodo *top;
 }Nodo;
 
 
@@ -27,15 +28,13 @@ Nodo **adjacency_list(int all_vertice,int line, int colunm,char **matrix){
     for(int i; i < line;i++){
         for(int j; j < colunm;j++){
             vertice = matrix[i][j];
-            if(vertice == '.'){
-                
-            }
+            Nodo *visitable(line, colunm, matrix);
         }
     }
 }
 
-Nodo **visitable(int line, int colunm,char **matrix){
-    
+Nodo *visitable(int line, int colunm,char **matrix){
+
 }
 
 int main(){
@@ -43,6 +42,7 @@ int main(){
     scanf("%d %d", &line, &colunm);
     char **matrix = create_matrix(line, colunm);
     Nodo **adjacency_list(line, colunm, matrix);
+
     char command[10];
     do{
         scanf("%s", &command);
