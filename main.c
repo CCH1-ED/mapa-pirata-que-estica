@@ -5,7 +5,6 @@
 typedef struct Nodo{
     int vertice;
     struct Nodo *next;
-    struct Nodo *top;
 }Nodo;
 
 
@@ -34,7 +33,7 @@ Nodo **adjacency_list(int all_vertice,int line, int colunm,char **matrix){
 }
 
 Nodo *visitable(int line, int colunm,char **matrix){
-
+    Nodo *visitable = 
 }
 
 int main(){
