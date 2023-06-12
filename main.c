@@ -20,7 +20,7 @@ int main(){
     char command[10];
     do{
         scanf("%s", &command);
-        if
+        
     }while (command != 'F');
     
     return 0;
