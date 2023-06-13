@@ -26,7 +26,7 @@ Nodo **adjacency_list(int all_vertice,int line, int colunm,char **matrix){
     for(int i; i < line;i++){
         for(int j; j < colunm;j++){
             vertice = matrix[i][j];
-            Nodo *visitable();//sei la pularei de um predio 
+            Nodo *visitable();
         }
     }
 }
@@ -41,6 +41,7 @@ Nodo *visitable(Nodo *head,int value){
     }
     else
         head->next = visitable(head->next, value);
+    return head;
 }
 
 int main(){
