@@ -41,14 +41,13 @@ Nodo *visitable(Nodo *head,int value){
         return new;
     }
     else
-        head
+        head;
 }
 
 int main(){
     int line, colunm;
     scanf("%d %d", &line, &colunm);
     Nodo *head = NULL;
-    Nodo *v = create_visitable();
     char **matrix = create_matrix(line, colunm);
     Nodo **adjacency_list(line, colunm, matrix);
 
