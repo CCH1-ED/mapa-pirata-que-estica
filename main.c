@@ -53,8 +53,7 @@ int main(){
 
     char command[10];
     do{
-        scanf("%s", &command);
-    }while (command != 'F');
-    
+        scanf("%c", &command);
+    }while (command != 'F');    
     return 0;
 }
