@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/fabia/OneDrive/Documentos/GitHub/mapa-pirata-que-estica",
-      "program": "c:/Users/fabia/OneDrive/Documentos/GitHub/mapa-pirata-que-estica/build/Debug/outDebug",
+      "cwd": "c:/Users/Fabiano/Documents/GitHub/mapa-pirata-que-estica",
+      "program": "c:/Users/Fabiano/Documents/GitHub/mapa-pirata-que-estica/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
