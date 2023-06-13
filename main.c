@@ -1,6 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "stack.c"
+#include "queue.c"
 
 typedef struct Nodo{
     int vertice;
@@ -41,7 +40,7 @@ Nodo *visitable(Nodo *head,int value){
         return new;
     }
     else
-        head;
+        head->next = visitable(head->next, value);
 }
 
 int main(){
