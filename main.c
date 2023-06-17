@@ -191,13 +191,14 @@ int main() {
 
     // Processar os comandos
     char command[10];
-    while (command[0] != 'F') {
-        printf("Digite um comando (regioes, cam, x, ., F): ");
-        scanf(" %s\n", &command);
+    while (strcmp(command, "F")!=0) {
+        printf("Digite um comando (regioes, cam, x, ., F): \n");
+        scanf(" %s", &command);
 
-        if (strcmp(command, "regioes"))  {
+        if (strcmp(command, "regioes")==0)  {
             calculateRegions(graph, numRows * numCols);
-        } else if (strcmp(command, "cam")) {
+        } 
+        else if (strcmp(command, "cam")==0) {
             int i1, j1, i2, j2;
             printf("Digite as posições i1, j1, i2, j2: ");
             scanf("%d %d %d %d", &i1, &j1, &i2, &j2);
@@ -208,14 +209,16 @@ int main() {
                 printf("Não existe caminho entre as posições.\n");
             else
                 printf("Menor número de passos necessários: %d\n", shortestPath);
-        } else if (command[0] == 'x') {
+        } 
+        else if (strcmp(command,"x")==0) {
             int i, j;
             printf("Digite a posição i, j: ");
             scanf("%d %d", &i, &j);
             map[i][j] = 'x';
             printf("Mapa atual:\n");
             printMap(map, numRows, numCols);
-        } else if (command[0] == '.') {
+        } 
+        else if (strcmp(command, ".")==0) {
             int i, j;
             printf("Digite a posição i, j: ");
             scanf("%d %d", &i, &j);
