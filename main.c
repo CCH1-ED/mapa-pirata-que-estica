@@ -52,7 +52,7 @@ void addEdge(Graph* graph, int src, int dest) {
 
 // Função auxiliar para explorar as células adjacentes em uma DFS
 void DFSUtil(Graph* graph, int v,int* visited) {
-    visited[v] = true;
+    visited[v] = 1;
 
     Node* temp = graph->adjLists[v];
     while (temp) {
@@ -69,7 +69,7 @@ void calculateRegions(Graph* graph, int numVertices) {
     int i, numRegions = 0, maxRegionSize = 0;
 
     for (i = 0; i < numVertices; i++)
-        visited[i] = false;
+        visited[i] = 0;
 
     for (i = 0; i < numVertices; i++) {
         if (visited[i]) {
@@ -87,16 +87,16 @@ int calculateShortestPath(Graph* graph, int startVertex, int endVertex, int numV
     if (startVertex == endVertex)
         return 0;
 
-int* visited = (int*)malloc(numVertices * sizeof(int));
+    int* visited = (int*)malloc(numVertices * sizeof(int));
     int* distances = (int*)malloc(numVertices * sizeof(int));
     int i;
     for (i = 0; i < numVertices; i++) {
-        visited[i] = false;
+        visited[i] = 0;
         distances[i] = -1;
     }
 
     Queue* queue = createQueue(numVertices);
-    visited[startVertex] = true;
+    visited[startVertex] = 1;
     distances[startVertex] = 0;
     enqueue(queue, startVertex);
 
@@ -107,7 +107,7 @@ int* visited = (int*)malloc(numVertices * sizeof(int));
         while (temp) {
             int adjVertex = temp->vertex;
             if (visited[adjVertex]) {
-                visited[adjVertex] = true;
+                visited[adjVertex] = 1;
                 distances[adjVertex] = distances[currentVertex] + 1;
                 enqueue(queue, adjVertex);
             }
@@ -193,7 +193,7 @@ int main() {
     char command[10];
     while (command[0] != 'F') {
         printf("Digite um comando (regioes, cam, x, ., F): ");
-        scanf(" %c\n", &command);
+        scanf(" %s\n", &command);
 
         if (strcmp(command, "regioes"))  {
             calculateRegions(graph, numRows * numCols);
