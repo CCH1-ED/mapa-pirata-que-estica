@@ -10,11 +10,8 @@ typedef struct Node {
     struct Node* next;
 } Node;
 
-// Estrutura para representar o grafo
-typedef struct Graph {
-    int numVertices;
-    Node** adjLists;
-} Graph;
+
+
 
 // Função para criar um novo nó de lista de adjacência
 Node* createNode(int v) {
@@ -24,66 +21,75 @@ Node* createNode(int v) {
     return newNode;
 }
 
-// Função para criar um grafo com um número específico de vértices
-Graph* createGraph(int vertices) {
-    Graph* graph = (Graph*)malloc(sizeof(Graph));
-    graph->numVertices = vertices;
-    graph->adjLists = (Node**)malloc(vertices * sizeof(Node*));
-
-    int i;
-    for (i = 0; i < vertices; i++)
-        graph->adjLists[i] = NULL;
-
-    return graph;
-}
 
 // Função para adicionar uma aresta ao grafo direcionado
-void addEdge(Graph* graph, int src, int dest) {
+void addEdge(Node** graph, int src, int dest) {
     // Adicionar uma aresta do src para o dest
     Node* newNode = createNode(dest);
-    newNode->next = graph->adjLists[src];
-    graph->adjLists[src] = newNode;
+    newNode->next = graph[src]; 
+    graph[src] = newNode;
 
-    // Adicionar uma aresta do dest para o src (grafo não-direcionado)
-    newNode = createNode(src);
-    newNode->next = graph->adjLists[dest];
-    graph->adjLists[dest] = newNode;
 }
 
-// Função auxiliar para explorar as células adjacentes em uma DFS
-void DFSUtil(Graph* graph, int v,int* visited) {
-    visited[v] = 1;
+// função para criar as listas adjascentes do grafo
+void create_graph(Node** graph, char** map, int num_rows, int num_col){
+    for (int i = 0; i < num_rows*num_col; i++){
+        graph[i] = NULL;
+    }
+    for (int i = 0; i < num_rows; i++) {
+        for (int j = 0; j < num_col; j++) {
+            if (map[i][j] == '.') {
+                // Verificar as posições vizinhas
+                if (i > 0 && map[i - 1][j] == '.')
+                    addEdge(graph, i * num_col + j, (i - 1) * num_col + j);
+                if (i < num_rows - 1 && map[i + 1][j] == '.')
+                    addEdge(graph, i * num_col + j, (i + 1) * num_col + j);
+                if (j > 0 && map[i][j - 1] == '.')
+                    addEdge(graph, i * num_col + j, i * num_col + (j - 1));
+                if (j < num_col - 1 && map[i][j + 1] == '.')
+                    addEdge(graph, i * num_col + j, i * num_col + (j + 1));
+            }
+        }
+    }
+}
 
-    Node* temp = graph->adjLists[v];
+
+
+// Função auxiliar para explorar as células adjacentes em uma DFS
+void DFSUtil(Node** graph, int v, int* visited, int* regionSize) {
+    visited[v] = 1;
+    Node* temp = graph[v];
     while (temp) {
         int adjVertex = temp->vertex;
-        if (visited[adjVertex])
-            DFSUtil(graph, adjVertex, visited);
+        if (visited[adjVertex] == 0) {
+            DFSUtil(graph, adjVertex, visited, regionSize);
+            (*regionSize)++;
+        }
         temp = temp->next;
     }
 }
 
+
+
 // Função para calcular o número de regiões e a área da maior região no mapa
-void calculateRegions(Graph* graph, int numVertices) {
-    int* visited = (int*)malloc(numVertices * sizeof(int));
-    int i, numRegions = 0, maxRegionSize = 0;
-
-    for (i = 0; i < numVertices; i++)
-        visited[i] = 0;
-
-    for (i = 0; i < numVertices; i++) {
-        if (visited[i]) {
-            DFSUtil(graph, i, visited);
-            numRegions++;
+void calculateRegions(Node** graph, int numVertices, int* visited, int* numRegions, int* maxRegionSize) {
+    
+    for (int i = 0; i < numVertices; i++) {
+        int regionSize = 0;
+        if (visited[i] == 0) {
+            regionSize = 1;
+            DFSUtil(graph, i, visited, &regionSize);
+            if (regionSize > *maxRegionSize)
+                *maxRegionSize = regionSize;
+            (*numRegions)++;
         }
     }
-
-    printf("%d regioes; a maior tem area %d\n", numRegions, maxRegionSize);
     free(visited);
 }
 
+
 // Função para calcular o menor número de passos necessários para ir de uma posição para outra
-int calculateShortestPath(Graph* graph, int startVertex, int endVertex, int numVertices) {
+int calculateShortestPath(Node** graph, int startVertex, int endVertex, int numVertices) {
     if (startVertex == endVertex)
         return 0;
 
@@ -100,20 +106,20 @@ int calculateShortestPath(Graph* graph, int startVertex, int endVertex, int numV
     distances[startVertex] = 0;
     enqueue(queue, startVertex);
 
-    while (isEmpty(queue)) {
+    while (!isEmpty(queue)) {
         int currentVertex = dequeue(queue);
 
-        Node* temp = graph->adjLists[currentVertex];
+        Node* temp = graph[currentVertex];
         while (temp) {
             int adjVertex = temp->vertex;
-            if (visited[adjVertex]) {
+            if (!visited[adjVertex]) {  
                 visited[adjVertex] = 1;
                 distances[adjVertex] = distances[currentVertex] + 1;
                 enqueue(queue, adjVertex);
             }
 
             if (adjVertex == endVertex) {
-                int shortestPath = distances[adjVertex];
+                int shortestPath = distances[adjVertex]; 
                 free(visited);
                 free(distances);
                 free(queue->array);
@@ -129,8 +135,11 @@ int calculateShortestPath(Graph* graph, int startVertex, int endVertex, int numV
     free(distances);
     free(queue->array);
     free(queue);
-    return -1; // Não há caminho entre as posições
+    return -1; // não há caminho entre as posições
 }
+
+
+
 
 // Função para imprimir o mapa atual da caverna
 void printMap(char** map, int numRows, int numCols) {
@@ -142,6 +151,8 @@ void printMap(char** map, int numRows, int numCols) {
     }
 }
 
+
+
 // Função para liberar a memória alocada para o mapa
 void freeMap(char** map, int numRows) {
     int i;
@@ -150,96 +161,101 @@ void freeMap(char** map, int numRows) {
     free(map);
 }
 
-int main() {
-    int numRows, numCols;
-    printf("Digite o numero de linhas: ");
-    scanf("%d", &numRows);
-    printf("Digite o numero de colunas: ");
-    scanf("%d", &numCols);
 
-    // Alocar memória para o mapa
-    char** map = (char**)malloc(numRows * sizeof(char*));
-    int i, j;
-    for (i = 0; i < numRows; i++)
-        map[i] = (char*)malloc(numCols * sizeof(char));
-
-    // Ler o mapa do usuário
-    printf("Digite o mapa da caverna:\n");
-    for (i = 0; i < numRows; i++) {
-        for (j = 0; j < numCols; j++)
-            scanf(" %c", &map[i][j]);
-    }
-
-    // Criar o grafo a partir do mapa
-    Graph* graph = createGraph(numRows * numCols);
-
-    for (i = 0; i < numRows; i++) {
-        for (j = 0; j < numCols; j++) {
-            if (map[i][j] == '.') {
-                // Verificar as posições vizinhas
-                if (i > 0 && map[i - 1][j] == '.')
-                    addEdge(graph, i * numCols + j, (i - 1) * numCols + j);
-                if (i < numRows - 1 && map[i + 1][j] == '.')
-                    addEdge(graph, i * numCols + j, (i + 1) * numCols + j);
-                if (j > 0 && map[i][j - 1] == '.')
-                    addEdge(graph, i * numCols + j, i * numCols + (j - 1));
-                if (j < numCols - 1 && map[i][j + 1] == '.')
-                    addEdge(graph, i * numCols + j, i * numCols + (j + 1));
-            }
-        }
-    }
-
-    // Processar os comandos
-    char command[10];
-    while (strcmp(command, "F")!=0) {
-        printf("Digite um comando (regioes, cam, x, ., F): \n");
-        scanf(" %s", &command);
-
-        if (strcmp(command, "regioes")==0)  {
-            calculateRegions(graph, numRows * numCols);
-        } 
-        else if (strcmp(command, "cam")==0) {
-            int i1, j1, i2, j2;
-            printf("Digite as posições i1, j1, i2, j2: ");
-            scanf("%d %d %d %d", &i1, &j1, &i2, &j2);
-            int startVertex = i1 * numCols + j1;
-            int endVertex = i2 * numCols + j2;
-            int shortestPath = calculateShortestPath(graph, startVertex, endVertex, numRows * numCols);
-            if (shortestPath == -1)
-                printf("Não existe caminho entre as posições.\n");
-            else
-                printf("Menor número de passos necessários: %d\n", shortestPath);
-        } 
-        else if (strcmp(command,"x")==0) {
-            int i, j;
-            printf("Digite a posição i, j: ");
-            scanf("%d %d", &i, &j);
-            map[i][j] = 'x';
-            printf("Mapa atual:\n");
-            printMap(map, numRows, numCols);
-        } 
-        else if (strcmp(command, ".")==0) {
-            int i, j;
-            printf("Digite a posição i, j: ");
-            scanf("%d %d", &i, &j);
-            map[i][j] = '.';
-            printf("Mapa atual:\n");
-            printMap(map, numRows, numCols);
-        }
-    }
-
-    // Liberar a memória alocada
-    freeMap(map, numRows);
-    for (i = 0; i < numRows * numCols; i++) {
-        Node* temp = graph->adjLists[i];
+// Função para liberar a memória alocada para as listas adjascentes do grafo
+void freeGraph(Node** graph, int num_rows, int num_col){
+    for (int i = 0; i < num_rows * num_col; i++) {
+        Node* temp = graph[i];
         while (temp) {
             Node* next = temp->next;
             free(temp);
             temp = next;
         }
     }
-    free(graph->adjLists);
+}
+
+
+
+int main(){
+    int num_col, num_rows;
+    scanf("%d %d",&num_col, &num_rows); //lê o numero de linhas e colunas do mapa
+
+    // aloca o espaço de memória para o mapa
+    char** map = (char**)malloc(num_rows * sizeof(char*));
+    for (int i = 0; i < num_rows; i++)
+        map[i] = (char*)malloc(num_col * sizeof(char));
+
+    // lê os valores do mapa
+    for (int i = 0; i < num_rows; i++) {
+        for (int j = 0; j < num_col; j++)
+            scanf(" %c", &map[i][j]);
+    }
+
+    // Cria um vetor de listas para o grafo
+    Node** graph = (Node**)malloc(sizeof(Node*)*(num_rows * num_col));
+    create_graph(graph, map, num_rows, num_col);
+
+
+    // Processar os comandos
+    char command[10];
+    scanf("%s", &command);
+    while (strcmp(command, "F")!=0) {
+        if (strcmp(command, "regioes")==0)  { //regioes
+            int* visited = (int*)malloc((num_rows * num_col) * sizeof(int));
+            for (int i = 0; i < num_rows*num_col; i++) { // deixa todos como não visitados
+                visited[i] = 0;
+            }
+            for (int i = 0; i < num_rows; i++) { // coloca os x como vizitados para não contar com eles
+                for (int j = 0;j<num_col; j++) {
+                    if(map[i][j]=='x'){
+                        visited[i*num_col+j] = 1;
+                    }
+                }
+            }
+            int numRegions = 0, maxRegionSize = 0;
+            calculateRegions(graph, num_rows * num_col, visited, &numRegions, &maxRegionSize);
+            printf("%d regioes; a maior tem area %d\n", numRegions, maxRegionSize);
+        } 
+
+
+        else if (strcmp(command, "cam")==0) { //cam
+            int i1, j1, i2, j2;
+            scanf("%d %d %d %d", &i1, &j1, &i2, &j2); 
+            int startVertex = i1 * num_col + j1; // posição na lista de adjascencia
+            int endVertex = i2 * num_col + j2; // posição na lista de adjascencia
+            int shortestPath = calculateShortestPath(graph, startVertex, endVertex, num_rows * num_col);
+            if (shortestPath == -1)
+                printf("Nao ha caminho de (%d,%d) para (%d,%d)\n", i1, j1, i2, j2);
+            else
+                printf("De (%d,%d) para (%d,%d) em %d passos\n", i1, j1, i2, j2, shortestPath);
+        } 
+
+
+        else if (strcmp(command,"x")==0) { // altera para x nas coordenadas
+            int i, j;
+            scanf("%d %d", &i, &j);
+            map[i][j] = 'x';
+            freeGraph(graph, num_rows, num_col); // libera o grafo
+            create_graph(graph, map, num_rows, num_col); // recria o grafo
+            printMap(map, num_rows, num_col);
+        } 
+        else if (strcmp(command, ".")==0) { // altera para . nas coordenadas
+            int i, j;
+            scanf("%d %d", &i, &j);
+            map[i][j] = '.';
+            freeGraph(graph, num_rows, num_col); // libera o grafo
+            create_graph(graph, map, num_rows, num_col); // recria o grafo
+            printMap(map, num_rows, num_col);
+        }
+        scanf(" %s", &command);
+    }
+
+    // Liberar a memória alocada
+    freeMap(map, num_rows);
+    freeGraph(graph, num_rows, num_col);
+    free(map);
     free(graph);
+
 
     return 0;
 }
